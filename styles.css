@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  cursor: pointer;
+}
+
 body {
   position: relative;
 }
@@ -30,6 +34,9 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
+  cursor: auto;
+
+  z-index: 1;
 }
 
 .stickers {
@@ -48,9 +55,6 @@ body {
   cursor: pointer;
 }
 
-/* ------------------------ */
-/* moving sticker styles */
-/* .moving__sticker {
-  position: absolute;
-  font-size: 2rem;
-} */
+.stickers li:hover {
+  background: #d1d6da;
+}
