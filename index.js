@@ -1,42 +1,53 @@
 const body = document.querySelector('body');
 
 // select sticker
-document.querySelectorAll('li').forEach((sticker) => {
-  sticker.addEventListener('click', () => {
-    const rect = sticker.getBoundingClientRect();
-    selectSticker(sticker.textContent, rect.top, rect.left);
+document.querySelectorAll('li').forEach((stickerEl) => {
+  stickerEl.addEventListener('click', () => {
+    // check if we are selecting a different sticker or first one
+    const stickerChange = document.querySelector('.moving__sticker');
+    if (stickerChange) {
+      stickerChange.remove();
+    }
+
+    // current element position
+    const rect = stickerEl.getBoundingClientRect();
+    selectSticker(stickerEl, rect.top, rect.left);
   });
 });
 
-const selectSticker = (sticker, top, left) => {
-  const stickerHolder = document.createElement('p');
-  stickerHolder.classList.add('moving__sticker');
-  stickerHolder.textContent = sticker;
-  stickerHolder.style.fontSize = '1.5rem';
-  stickerHolder.style.position = 'absolute';
-  stickerHolder.style.top = `${top}px`;
-  stickerHolder.style.left = `${left}px`;
+const selectSticker = (stickerEl, top, left) => {
+  const copyStickerEl = stickerEl.cloneNode((deep = true));
 
-  body.append(stickerHolder);
+  copyStickerEl.classList.add('moving__sticker');
+  copyStickerEl.style.top = `${top}px`;
+  copyStickerEl.style.left = `${left}px`;
 
-  document.addEventListener('mousemove', moveSticker);
+  body.append(copyStickerEl);
+
+  document.addEventListener('mousemove', (event) =>
+    moveSticker(event, copyStickerEl)
+  );
 };
 
 // move sticker with mouse
-const moveSticker = (event) => {
-  const stickerHolder = document.querySelector('.moving__sticker');
-  stickerHolder.style.top = `${event.clientY}px`;
-  stickerHolder.style.left = `${event.clientX}px`;
+const moveSticker = (event, stickerEl) => {
+  stickerEl.style.top = `${event.clientY}px`;
+  stickerEl.style.left = `${event.clientX}px`;
 
-  document.addEventListener('mousedown', putDownSticker);
+  stickerEl.addEventListener('click', () => {
+    putDownSticker(stickerEl);
+  });
 };
 
 // put sticker down on the board
-const putDownSticker = (event) => {
-  const stickerHolder = document.querySelector('.moving__sticker');
-  stickerHolder.style.top = `${event.clientY}px`;
-  stickerHolder.style.left = `${event.clientX}px`;
+const putDownSticker = (stickerEl) => {
+  const rect = stickerEl.getBoundingClientRect();
 
-  stickerHolder.classList.remove('moving__sticker');
-  document.removeEventListener('mousemove', moveSticker);
+  const stampedSticker = stickerEl.cloneNode((deep = true));
+  stampedSticker.classList.remove('moving__sticker');
+  stampedSticker.classList.add('stamped__sticker');
+  stampedSticker.style.top = `${rect.top}px`;
+  stampedSticker.style.left = `${rect.left}px`;
+
+  body.append(stampedSticker);
 };
