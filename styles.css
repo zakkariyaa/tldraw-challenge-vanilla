@@ -58,3 +58,11 @@ body {
 .stickers li:hover {
   background: #d1d6da;
 }
+
+/* moving sticker */
+.moving__sticker,
+.stamped__sticker {
+  position: absolute;
+  list-style: none;
+  font-size: 1.5rem;
+}
