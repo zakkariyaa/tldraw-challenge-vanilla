@@ -1,9 +1,11 @@
 const body = document.querySelector('body');
+const stickerSection = document.querySelector('.stickers__section');
 const stickerBoard = document.querySelector('.stickers');
 
 // select sticker
-stickerBoard.querySelectorAll('li').forEach((stickerEl) => {
-  stickerEl.addEventListener('click', () => {
+const selectSticker = (event) => {
+  const stickerEl = event.target.closest('li');
+  if (stickerEl) {
     // check if we are selecting a different sticker or first one
     const stickerChange = document.querySelector('.moving__sticker');
     if (stickerChange) {
@@ -12,12 +14,15 @@ stickerBoard.querySelectorAll('li').forEach((stickerEl) => {
 
     // current element position
     const rect = stickerEl.getBoundingClientRect();
-    selectSticker(stickerEl, rect.top, rect.left);
-  });
-});
+    createNewSticker(stickerEl, rect.top, rect.left);
+  }
+};
 
-const selectSticker = (stickerEl, top, left) => {
-  const copyStickerEl = stickerEl.cloneNode((deep = true));
+stickerBoard.addEventListener('click', selectSticker);
+
+// create the new sticker to be put on the board
+const createNewSticker = (sticker, top, left) => {
+  const copyStickerEl = sticker.cloneNode((deep = true));
 
   copyStickerEl.classList.add('moving__sticker');
   copyStickerEl.style.top = `${top}px`;
@@ -52,3 +57,23 @@ const putDownSticker = (stickerEl) => {
 
   body.append(stampedSticker);
 };
+
+// -------------------------------
+// create custom sticker
+const customStickerUpload = document.querySelector('#custom-sticker-upload');
+
+const handleCustomStickerUpload = (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+
+  reader.addEventListener('load', (event) => {
+    const newSticker = document.createElement('li');
+    newSticker.innerHTML = `<img src="${event.target.result}" alt="Custom Sticker">`;
+
+    stickerBoard.append(newSticker);
+    customStickerUpload.style.display = 'none';
+  });
+};
+
+customStickerUpload.addEventListener('change', handleCustomStickerUpload);
