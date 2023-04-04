@@ -1,7 +1,8 @@
 const body = document.querySelector('body');
+const stickerBoard = document.querySelector('.stickers');
 
 // select sticker
-document.querySelectorAll('li').forEach((stickerEl) => {
+stickerBoard.querySelectorAll('li').forEach((stickerEl) => {
   stickerEl.addEventListener('click', () => {
     // check if we are selecting a different sticker or first one
     const stickerChange = document.querySelector('.moving__sticker');
