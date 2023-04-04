@@ -81,12 +81,14 @@ body {
   color: #3a3434;
 }
 
-.toolbar__menu *.active {
+.toolbar__menu .handle__sticker.active,
+.toolbar__menu .select__sticker.active {
   background: #2f80ed;
   border-radius: 0.5rem;
 }
 
-.toolbar__menu *.active i {
+.toolbar__menu .handle__sticker.active i,
+.toolbar__menu .select__sticker.active i {
   color: #fff;
 }
 
@@ -94,12 +96,6 @@ body {
 .handle__sticker,
 .remove__sticker.active {
   cursor: pointer;
-}
-
-.select__sticker:hover,
-.handle__sticker:hover,
-.remove__sticker.active:hover {
-  background: #d1d6da;
 }
 
 .toolbar__menu .remove__sticker {
@@ -135,12 +131,17 @@ body img {
 }
 
 /* ------------------------ */
-/* board sticker */
+/* board stickers */
 .moving__sticker,
 .stamped__sticker {
   position: absolute;
   list-style: none;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+}
+
+.selected__sticker {
+  padding: 0.2rem;
+  border: 1px solid #2f80ed;
 }
 
 /* ------------------------ */
