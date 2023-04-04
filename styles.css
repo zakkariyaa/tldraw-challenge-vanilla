@@ -24,11 +24,12 @@ body {
 /* ------------------------ */
 /* stickers section styles */
 .stickers__section {
-  justify-content: space-around;
+  padding: 0 0.2rem;
+  justify-content: space-between;
   align-items: center;
   background: #ebebeb;
   border-top: 2px solid black;
-  height: 12vh;
+  height: 10vh;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -38,10 +39,15 @@ body {
   z-index: 1;
 }
 
+.stickers {
+  width: 50%;
+  justify-content: space-between;
+}
+
 .stickers li {
   list-style: none;
-  font-size: 1.1rem;
-  padding: 0.5rem;
+  padding: 0.2rem;
+  font-size: 1rem;
   border-radius: 0.2rem;
 
   cursor: pointer;
@@ -55,6 +61,7 @@ body {
 /* toolbar menu */
 .toolbar__menu,
 .stickers {
+  padding: 0.4rem;
   justify-content: space-between;
   background: #fdfdfd;
   border: 1px solid #dfdfe0;
@@ -64,10 +71,23 @@ body {
     0px 2px 6px rgba(0, 0, 0, 0.1), inset 0px 0px 0px 1px #fff;
 }
 
+.toolbar__menu {
+  width: 30%;
+}
+
 .toolbar__menu * {
-  font-size: 1.2rem;
-  padding: 0.3rem;
+  padding: 0.2rem;
+  font-size: 1rem;
   color: #3a3434;
+}
+
+.toolbar__menu *.active {
+  background: #2f80ed;
+  border-radius: 0.5rem;
+}
+
+.toolbar__menu *.active i {
+  color: #fff;
 }
 
 .select__sticker,
@@ -82,13 +102,36 @@ body {
   background: #d1d6da;
 }
 
-.toolbar__menu .remove__sticker * {
+.toolbar__menu .remove__sticker {
   opacity: 0.3;
-  cursor: auto;
 }
 
 .remove__sticker.active {
   opacity: 1;
+}
+
+/* ------------------------ */
+/* custom sticker upload */
+#custom-sticker-upload {
+  width: 10%;
+  font-size: 0;
+  cursor: pointer;
+}
+
+#custom-sticker-upload::file-selector-button {
+  padding: 0em;
+  border: thin solid grey;
+}
+
+#custom-sticker-upload:before {
+  border-radius: 0.5rem;
+  content: '📤';
+  font-size: 2rem;
+}
+
+body img {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* ------------------------ */
@@ -97,27 +140,31 @@ body {
 .stamped__sticker {
   position: absolute;
   list-style: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 /* ------------------------ */
 /* media queries */
 /* for bigger screen devices */
 @media screen and (min-width: 700px) {
+  .stickers__section {
+    height: 12vh;
+  }
+
   .stickers {
-    width: 40%;
+    width: 25%;
   }
   .stickers li {
-    font-size: 1.5rem;
-    padding: 0.7rem;
+    font-size: 1.3rem;
+    padding: 0.4rem;
   }
 
   .toolbar__menu {
-    width: 25%;
+    width: 20%;
   }
 
   .toolbar__menu * {
-    font-size: 1.5rem;
-    padding: 0.5rem;
+    font-size: 1.2rem;
+    padding: 0.4rem;
   }
 }
