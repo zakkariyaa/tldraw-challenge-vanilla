@@ -1,25 +1,35 @@
 const body = document.querySelector('body');
 const stickerSection = document.querySelector('.stickers__section');
 const stickerBoard = document.querySelector('.stickers');
+const toolbarMenu = document.querySelector('.toolbar__menu');
 
+// -------------------------------
+// golbal states
+let canBeDeleted = false;
+let activeTask = 'hand';
+
+// -------------------------------
 // select sticker
 const selectSticker = (event) => {
-  const stickerEl = event.target.closest('li');
-  if (stickerEl) {
-    // check if we are selecting a different sticker or first one
-    const stickerChange = document.querySelector('.moving__sticker');
-    if (stickerChange) {
-      stickerChange.remove();
-    }
+  if (activeTask === 'hand') {
+    const stickerEl = event.target.closest('li');
+    if (stickerEl) {
+      // check if we are selecting a different sticker or first one
+      const stickerChange = document.querySelector('.moving__sticker');
+      if (stickerChange) {
+        stickerChange.remove();
+      }
 
-    // current element position
-    const rect = stickerEl.getBoundingClientRect();
-    createNewSticker(stickerEl, rect.top, rect.left);
+      // current element position
+      const rect = stickerEl.getBoundingClientRect();
+      createNewSticker(stickerEl, rect.top, rect.left);
+    }
   }
 };
 
 stickerBoard.addEventListener('click', selectSticker);
 
+// -------------------------------
 // create the new sticker to be put on the board
 const createNewSticker = (sticker, top, left) => {
   const copyStickerEl = sticker.cloneNode((deep = true));
@@ -30,32 +40,37 @@ const createNewSticker = (sticker, top, left) => {
 
   body.append(copyStickerEl);
 
-  document.addEventListener('mousemove', (event) =>
-    moveSticker(event, copyStickerEl)
-  );
+  document.addEventListener('mousemove', moveSticker);
 };
 
+// -------------------------------
 // move sticker with mouse
-const moveSticker = (event, stickerEl) => {
+const moveSticker = (event) => {
+  const stickerEl = document.querySelector('.moving__sticker');
   stickerEl.style.top = `${event.clientY}px`;
   stickerEl.style.left = `${event.clientX}px`;
 
-  stickerEl.addEventListener('click', () => {
-    putDownSticker(stickerEl);
-  });
+  document.addEventListener('mousedown', putDownSticker);
 };
 
+// -------------------------------
 // put sticker down on the board
-const putDownSticker = (stickerEl) => {
-  const rect = stickerEl.getBoundingClientRect();
+const putDownSticker = (e) => {
+  if (activeTask === 'hand') {
+    const stickerEl = e.target;
 
-  const stampedSticker = stickerEl.cloneNode((deep = true));
-  stampedSticker.classList.remove('moving__sticker');
-  stampedSticker.classList.add('stamped__sticker');
-  stampedSticker.style.top = `${rect.top}px`;
-  stampedSticker.style.left = `${rect.left}px`;
+    const rect = stickerEl.getBoundingClientRect();
+    const stampedSticker = stickerEl.cloneNode((deep = true));
 
-  body.append(stampedSticker);
+    stampedSticker.classList.remove('moving__sticker');
+    stampedSticker.classList.add('stamped__sticker');
+    stampedSticker.style.top = `${rect.top}px`;
+    stampedSticker.style.left = `${rect.left}px`;
+
+    // stampedSticker.addEventListener('click', handleBoardStickers);
+
+    body.append(stampedSticker);
+  }
 };
 
 // -------------------------------
@@ -77,3 +92,64 @@ const handleCustomStickerUpload = (event) => {
 };
 
 customStickerUpload.addEventListener('change', handleCustomStickerUpload);
+
+// -------------------------------
+// handle toolbar selections
+const handIcon = document.querySelector('.select__sticker');
+const cursorIcon = document.querySelector('.handle__sticker');
+const trashIcon = document.querySelector('.remove__sticker');
+
+[cursorIcon, handIcon].forEach((icon) => {
+  icon.addEventListener('click', (event) => {
+    const icon = event.target.closest('li');
+    if (icon.classList[0] === 'handle__sticker') {
+      document.removeEventListener('mousemove', moveSticker);
+
+      icon.classList.add('active');
+      handIcon.classList.remove('active');
+
+      activeTask = 'cursor';
+      canBeDeleted = true;
+    }
+
+    if (icon.classList[0] === 'select__sticker') {
+      icon.classList.add('active');
+      cursorIcon.classList.remove('active');
+      activeTask = 'hand';
+    }
+  });
+});
+
+// -------------------------------
+// remove (delete) stickers
+body.addEventListener('click', (event) => {
+  if (activeTask === 'cursor') {
+    const selectedSticker = event.target;
+    const oldSelectedSticker = body.querySelector(
+      '.stamped__sticker.selected__sticker'
+    );
+
+    if (
+      oldSelectedSticker &&
+      selectedSticker.classList[0] === 'stamped__sticker'
+    ) {
+      oldSelectedSticker.classList.remove('selected__sticker');
+    }
+
+    if (selectedSticker.classList[0] === 'stamped__sticker') {
+      trashIcon.classList.add('active');
+      selectedSticker.classList.add('selected__sticker');
+    }
+  }
+});
+
+const removeSticker = () => {
+  const selectedSticker = body.querySelector(
+    '.stamped__sticker.selected__sticker'
+  );
+
+  selectedSticker.style.display = 'none';
+  trashIcon.classList.remove('active');
+};
+
+trashIcon.addEventListener('click', removeSticker);
