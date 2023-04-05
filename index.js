@@ -9,7 +9,7 @@ let activeTask = 'hand';
 
 // -------------------------------
 // select sticker
-const selectSticker = (event) => {
+const chooseSticker = (event) => {
   if (activeTask === 'hand') {
     const stickerEl = event.target.closest('li');
     if (stickerEl) {
@@ -26,7 +26,7 @@ const selectSticker = (event) => {
   }
 };
 
-stickerBoard.addEventListener('click', selectSticker);
+stickerBoard.addEventListener('click', chooseSticker);
 
 // -------------------------------
 // create the new sticker to be put on the board
@@ -118,7 +118,9 @@ const trashIcon = document.querySelector('.remove__sticker');
 
 // -------------------------------
 // remove (delete) stickers
-body.addEventListener('click', (event) => {
+
+// select sticker
+const selectSticker = (event) => {
   if (activeTask === 'cursor') {
     const selectedSticker = event.target;
     const oldSelectedSticker = body.querySelector(
@@ -139,8 +141,11 @@ body.addEventListener('click', (event) => {
       selectedSticker.classList.add('selected__sticker');
     }
   }
-});
+};
 
+body.addEventListener('click', selectSticker);
+
+// remove sticker
 const removeSticker = () => {
   const selectedSticker = body.querySelector('.selected__sticker');
   const isToolbarImg = selectedSticker.classList[0] === 'selected__sticker';
@@ -152,3 +157,43 @@ const removeSticker = () => {
 };
 
 trashIcon.addEventListener('click', removeSticker);
+
+// -------------------------------
+// handle sticker repositioning
+const repostionSticker = (event) => {
+  if (activeTask === 'cursor') {
+    const selectedSticker = event.target;
+
+    // prevent it from receiving focus and triggering the :focus pseudo-class
+    selectedSticker.setAttribute('tabindex', '-1');
+
+    const markElement = () => {
+      document.addEventListener('mousemove', moveElement);
+      document.addEventListener('mouseup', dropElement);
+    };
+
+    const moveElement = (event) => {
+      selectedSticker.style.top = `${event.clientY}px`;
+      selectedSticker.style.left = `${event.clientX}px`;
+    };
+
+    const dropElement = () => {
+      const viewHeight = document.documentElement.clientHeight;
+      const toolbarHeight = (12 * viewHeight) / 100;
+      const boardHeight = viewHeight - toolbarHeight;
+      const elementHeight = parseInt(selectedSticker.style.top) + 12;
+
+      // check if element has went off view. If true, delete it
+      if (elementHeight > boardHeight) {
+        selectedSticker.remove();
+      }
+
+      document.removeEventListener('mousemove', moveElement);
+      document.removeEventListener('mouseup', dropElement);
+    };
+
+    selectedSticker.addEventListener('mousedown', markElement);
+  }
+};
+
+body.addEventListener('click', repostionSticker);
