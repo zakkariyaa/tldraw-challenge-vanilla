@@ -4,8 +4,7 @@ const stickerBoard = document.querySelector('.stickers');
 const toolbarMenu = document.querySelector('.toolbar__menu');
 
 // -------------------------------
-// golbal states
-let canBeDeleted = false;
+// golbal state
 let activeTask = 'hand';
 
 // -------------------------------
@@ -67,8 +66,6 @@ const putDownSticker = (e) => {
     stampedSticker.style.top = `${rect.top}px`;
     stampedSticker.style.left = `${rect.left}px`;
 
-    // stampedSticker.addEventListener('click', handleBoardStickers);
-
     body.append(stampedSticker);
   }
 };
@@ -109,7 +106,6 @@ const trashIcon = document.querySelector('.remove__sticker');
       handIcon.classList.remove('active');
 
       activeTask = 'cursor';
-      canBeDeleted = true;
     }
 
     if (icon.classList[0] === 'select__sticker') {
@@ -129,14 +125,16 @@ body.addEventListener('click', (event) => {
       '.stamped__sticker.selected__sticker'
     );
 
-    if (
-      oldSelectedSticker &&
-      selectedSticker.classList[0] === 'stamped__sticker'
-    ) {
+    // ensure only one item is selected at any moment
+    // and only items from the board or img sticker can be deleted
+    const isBoardSticker = selectedSticker.classList[0] === 'stamped__sticker';
+    const isImgSticker = selectedSticker.matches('img');
+
+    if (oldSelectedSticker && isBoardSticker) {
       oldSelectedSticker.classList.remove('selected__sticker');
     }
 
-    if (selectedSticker.classList[0] === 'stamped__sticker') {
+    if (isBoardSticker || isImgSticker) {
       trashIcon.classList.add('active');
       selectedSticker.classList.add('selected__sticker');
     }
@@ -144,12 +142,13 @@ body.addEventListener('click', (event) => {
 });
 
 const removeSticker = () => {
-  const selectedSticker = body.querySelector(
-    '.stamped__sticker.selected__sticker'
-  );
+  const selectedSticker = body.querySelector('.selected__sticker');
+  const isToolbarImg = selectedSticker.classList[0] === 'selected__sticker';
 
   selectedSticker.style.display = 'none';
+
   trashIcon.classList.remove('active');
+  if (isToolbarImg) customStickerUpload.style.display = 'inline-block';
 };
 
 trashIcon.addEventListener('click', removeSticker);

@@ -150,6 +150,7 @@ body img {
 @media screen and (min-width: 700px) {
   .stickers__section {
     height: 12vh;
+    padding: 0 0.5rem;
   }
 
   .stickers {
